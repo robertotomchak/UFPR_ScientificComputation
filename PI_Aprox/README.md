@@ -26,4 +26,4 @@ Then write the desired tolerance (must be a positive value).
 
 ## Calculations
 
-The method works by calculating the next term based on the previous one, and then add to the sum. The calculations are made in a way to minimize computational errors, like prioriting doing multiplications before summations.
+The method works by calculating the next term based on the previous one, and then add to the sum. The calculations are made in a way to minimize computational errors, like prioriting doing multiplications before summations. See calculations.pdf for more.
