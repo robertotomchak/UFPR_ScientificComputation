@@ -64,7 +64,7 @@ unsigned long int ulp (double x, double y) {
         b = *(unsigned int *) &x;
         a = *(unsigned int *) &y;
     }
-    return a - b;
+    return a - b - 1;
 }
 
 int main () {
