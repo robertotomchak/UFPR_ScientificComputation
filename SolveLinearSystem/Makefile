@@ -3,9 +3,9 @@
 
 # Compilador
 	LIKWID_HOME = /home/soft/likwid
-    CC     = gcc
-  	CFLAGS = "-I${LIKWID_HOME}/include -DLIKWID_PERFMON"
-    LFLAGS = "-L${LIKWID_HOME}/lib -llikwid" -lm
+    CC     = gcc -Wno-format
+    CFLAGS = -DLIKWID_PERFMON -I${LIKWID_HOME}/include
+    LFLAGS = -L${LIKWID_HOME}/lib -llikwid
 
 # Lista de arquivos para distribuição
 DISTFILES = *.c *.h LEIAME* Makefile
@@ -16,7 +16,7 @@ DISTDIR = `basename ${PWD}`
 all: main
 
 main:
-	gcc $(CLAGS) eg.c -o main $(LFLAGS)
+	$(CC) $(CFLAGS) utils.c main.c $(LFLAGS) -o main -g
 
 clean:
 	@echo "Limpando sujeira ..."
