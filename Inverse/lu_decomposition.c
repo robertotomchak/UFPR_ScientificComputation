@@ -85,6 +85,8 @@ double **inverse_matrix(double **A, int n, rtime_t *time) {
     }
     rtime_t end = timestamp();
     *time = end - start;
+    free(y);
+    free_matrix(LU, n);
     return A_inv;
 }
 
