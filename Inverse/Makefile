@@ -6,8 +6,9 @@
     CC     = gcc
 
 # Acrescentar onde apropriado as opções para incluir uso da biblioteca LIKWID
-    CFLAGS = -O0
-    LFLAGS = -lm
+    LIKWID_HOME = /home/soft/likwid
+    CFLAGS = -DLIKWID_PERFMON -I${LIKWID_HOME}/include -O0
+    LFLAGS = -L${LIKWID_HOME}/lib -llikwid -lm
 
 # Lista de arquivos para distribuição. Acrescentar mais arquivos se necessário.
 DISTFILES = *.c *.h LEIAME* Makefile
