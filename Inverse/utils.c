@@ -1,3 +1,8 @@
+/*
+	Name: Roberto Sprengel Minozzo Tomchak
+	GRR: 20232369
+*/
+
 #include <stdio.h>
 #include <string.h>
 #include <math.h>

@@ -1,4 +1,9 @@
 /*
+	Name: Roberto Sprengel Minozzo Tomchak
+	GRR: 20232369
+*/
+
+/*
     Calculates inverse of a matrix using LU decomposition
     Also defines useful metrics
 */

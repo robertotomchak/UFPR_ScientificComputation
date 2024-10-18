@@ -1,4 +1,9 @@
 /*
+	Name: Roberto Sprengel Minozzo Tomchak
+	GRR: 20232369
+*/
+
+/*
     Useful functions for array manipulation
     Uses double type in all array and matrices
 */
