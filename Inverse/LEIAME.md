@@ -3,6 +3,7 @@ Calculates inverse matrix using LU decomposition with partial pivoting.
 
 # Student Info
 Name: Roberto Sprengel Minozzo Tomchak
+
 GRR: 20232369
 
 # Limitations
