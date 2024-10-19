@@ -10,10 +10,14 @@
 
 #include "lu_decomposition.h"
 
+double dabs(double x) {
+	return x>0? x: -x;
+}
+
 int max_in_column(double **A, int n, int i) {
     int pos = i;
     for (int j = i + 1; j < n; j++)
-        if (A[j][i] > A[pos][i])
+        if (dabs(A[j][i]) > dabs(A[pos][i]))
             pos = j;
     return pos;
 }
@@ -42,10 +46,12 @@ double **create_lu(double **A, int n, int *column_pos) {
     double **LU = copy_matrix(A, n, n);
 
     // gauss elimination
-    for (int i = 0; i < n - 1; i++) {
-        int pos = max_in_column(A, n, i);
-        column_pos[i] = pos;
-        swap_lines(A, i, pos);
+    for (int i = 0; i < n; i++) {
+        int pos = max_in_column(LU, n, i);
+		int temp = column_pos[i];
+        column_pos[i] = column_pos[pos];
+		column_pos[pos] = temp;
+        swap_lines(LU, i, pos);
         for (int j = i+1; j < n; j++) {
             double m = LU[j][i] / LU[i][i];
             LU[j][i] = m;
@@ -53,8 +59,8 @@ double **create_lu(double **A, int n, int *column_pos) {
                 LU[j][k] -= LU[i][k] * m;
         }
     }
-    column_pos[n-1] = n-1;
 
+	print_matrix(LU, n, n);
     return LU;
 }
 
@@ -67,9 +73,7 @@ retrosub_L: makes the retrosubstitution of L (L*y = b)
 return: void
 */
 void retrosub_L(double **LU, double *y, int i, int n) {
-    // first line is trivial
-    y[0] = (i == 0); 
-    for (int j = 1; j < n; j++) {
+    for (int j = 0; j < n; j++) {
         y[j] = (j == i);
         for (int k = 0; k < j; k++)
             y[j] -= LU[j][k] * y[k];
@@ -105,19 +109,24 @@ double **inverse_matrix(double **A, int n, rtime_t *time) {
     rtime_t start = timestamp();
     // gauss elimination step
     int *column_pos = malloc(sizeof(double) * n);
+	for (int i = 0; i < n; i++)
+		column_pos[i] = i;
     double **LU = create_lu(A, n, column_pos);
     double **A_inv = create_matrix(n, n);
 
     // alternate between L*y = b and U*x = y
     double *y = malloc(sizeof(double) * n);
     for (int i = 0; i < n; i++) {
-        retrosub_L(LU, y, column_pos[i], n);
-        retrosub_U(LU, y, A_inv, i, n);
+        retrosub_L(LU, y, i, n);
+        retrosub_U(LU, y, A_inv, column_pos[i], n);
     }
-    adjust_lines(A_inv, n, column_pos);
+   	//adjust_lines(A_inv, n, column_pos);
     rtime_t end = timestamp();
     *time = end - start;
     free(y);
+	for (int i = 0; i < n; i++) printf("%d ", column_pos[i]);
+	printf("\n");
+	free(column_pos);
     free_matrix(LU, n);
     return A_inv;
 }
