@@ -17,7 +17,7 @@ DISTDIR = `basename ${PWD}`
 .PHONY: all clean purge dist
 
 %.o: %.c %.h
-	$(CC) -c $(CFLAGS) -o $@ $<
+	$(CC) -c $(CFLAGS) -o $@ $< -g
 
 all: $(PROG)
 

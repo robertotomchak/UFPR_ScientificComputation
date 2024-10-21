@@ -10,10 +10,22 @@
 
 #include "lu_decomposition.h"
 
+/*
+dabs: calculates the absolute value of a double
+	x: number
+return: abs(x)
+*/
 double dabs(double x) {
 	return x>0? x: -x;
 }
 
+/*
+max_in_column: finds the maximum value (in abs) in given column
+	A: matrix (must be nxn)
+	n: size of A
+	i: index of column
+return: position (line) of the maximum value in the column
+*/
 int max_in_column(double **A, int n, int i) {
     int pos = i;
     for (int j = i + 1; j < n; j++)
@@ -22,18 +34,18 @@ int max_in_column(double **A, int n, int i) {
     return pos;
 }
 
+/*
+swap_lines: swaps two lines of given matrix
+	A: matrix
+	i: first line
+	j: second line
+*/
 void swap_lines(double **A, int i, int j) {
     double *temp = A[i];
     A[i] = A[j];
     A[j] = temp;
 }
 
-void adjust_lines(double **A, int n, int *column_pos) {
-    for (int i = 0; i < n; i++) {
-        if (column_pos[i] > i)
-            swap_lines(A, i, column_pos[i]);
-    }
-}
 
 /*
 create_lu: creates a LU matrix such that A = LU
@@ -60,7 +72,6 @@ double **create_lu(double **A, int n, int *column_pos) {
         }
     }
 
-	print_matrix(LU, n, n);
     return LU;
 }
 
@@ -120,12 +131,9 @@ double **inverse_matrix(double **A, int n, rtime_t *time) {
         retrosub_L(LU, y, i, n);
         retrosub_U(LU, y, A_inv, column_pos[i], n);
     }
-   	//adjust_lines(A_inv, n, column_pos);
     rtime_t end = timestamp();
     *time = end - start;
     free(y);
-	for (int i = 0; i < n; i++) printf("%d ", column_pos[i]);
-	printf("\n");
 	free(column_pos);
     free_matrix(LU, n);
     return A_inv;
