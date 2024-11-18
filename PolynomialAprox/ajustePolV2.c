@@ -11,18 +11,34 @@
 //   AJUSTE DE CURVAS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void montaSL(double **A, double *b, int n, long long int p, double *x, double *y) {
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < n; ++j) {
-			A[i][j] = 0.0;
-				for (long long int k = 0; k < p; ++k)
-					A[i][j] += pow(x[k], i+j);
+void montaSL(double **A, double *b, int d, long long int p, double *x, double *y) {
+	double *temp = calloc(2*d+1, sizeof(double));
+	double *xk = calloc(p, sizeof(double));
+	temp[0] = p;
+	// TO-DO: array of structs
+	for (int i = 0; i < p; i++) {
+		temp[1] += x[i];
+		xk[i] = x[i];
+		b[0] += y[i];
+		b[1] += x[i] * y[i];
+	}
+	for (int i = 2; i <= d; i++) {
+		for (int j = 0; j < p; j++) {
+			xk[j] = x[j] * xk[j];
+			temp[i] += xk[j];
+			b[i] += y[j] * xk[j];
 		}
 	}
-	for (int i = 0; i < n; ++i) {
-		b[i] = 0.0;
-		for (long long int k = 0; k < p; ++k)
-			b[i] += pow(x[k],i) * y[k];
+	for (int i = d+1; i <= 2*d; i++) {
+		for (int j = 0; j < p; j++) {
+			xk[j] = x[j] * xk[j];
+			temp[i] += xk[j];
+		}
+	}
+	// pra que acessar depois?
+	for (int i = 0; i <= d; i++) {
+		for (int j = 0; j <= d; j++)
+			A[i][j] = temp[i+j];
 	}
 }
 
@@ -78,23 +94,23 @@ int main() {
 	p = K;   // quantidade de pontos
 	n = N+1; // tamanho do SL (grau N + 1)
 
-	double *x = (double *) malloc(sizeof(double)*p);
-	double *y = (double *) malloc(sizeof(double)*p);
+	double *x = (double *) calloc(p, sizeof(double));
+	double *y = (double *) calloc(p, sizeof(double));
 
 	// ler numeros
 	for (long long int i = 0; i < p; ++i)
 		scanf("%lf %lf", x+i, y+i);
 
-	double **A = (double **) malloc(sizeof(double *)*n);
+	double **A = (double **) calloc(n, sizeof(double *));
 	for (int i = 0; i < n; ++i)
-		A[i] = (double *) malloc(sizeof(double)*n);
+		A[i] = (double *) calloc(n, sizeof(double));
 
-	double *b = (double *) malloc(sizeof(double)*n);
-	double *alpha = (double *) malloc(sizeof(double)*n); // coeficientes ajuste
+	double *b = (double *) calloc(n, sizeof(double));
+	double *alpha = (double *) calloc(n, sizeof(double)); // coeficientes ajuste
 
 	// (A) Gera SL
 	double tSL = timestamp();
-	montaSL(A, b, n, p, x, y);
+	montaSL(A, b, N, p, x, y);
 	tSL = timestamp() - tSL;
 
 	// (B) Resolve SL
