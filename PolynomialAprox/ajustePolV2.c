@@ -11,41 +11,45 @@
 //   AJUSTE DE CURVAS
 /////////////////////////////////////////////////////////////////////////////////////
 
-void montaSL(double **A, double *b, int d, long long int p, double *x, double *y) {
-	double *temp = calloc(2*d+1, sizeof(double));
+// otimizacação simples: 3.7219999358e-03 1.5119998716e-03
+// otimiação array of structs: 3.1289998442e-03 1.2749992311e-03
+
+
+
+void montaSL(double **A, double *b, long long int d, long long int p, double *xy) {
+	double *temp = calloc(2*d+1, sizeof(double)); // temp[i] = soma(x[i]^i)
 	double *xk = calloc(p, sizeof(double));
 	temp[0] = p;
-	// TO-DO: array of structs
-	for (int i = 0; i < p; i++) {
-		temp[1] += x[i];
-		xk[i] = x[i];
-		b[0] += y[i];
-		b[1] += x[i] * y[i];
+	for (long long int i = 0; i < p; i++) {
+		temp[1] += xy[2*i];
+		xk[i] = xy[2*i];
+		b[0] += xy[2*i+1];
+		b[1] += xy[2*i] * xy[2*i+1];
 	}
-	for (int i = 2; i <= d; i++) {
-		for (int j = 0; j < p; j++) {
-			xk[j] = x[j] * xk[j];
+	for (long long int i = 2; i <= d; i++) {
+		for (long long int j = 0; j < p; j++) {
+			xk[j] = xy[2*j] * xk[j];
 			temp[i] += xk[j];
-			b[i] += y[j] * xk[j];
+			b[i] += xy[2*j+1] * xk[j];
 		}
 	}
-	for (int i = d+1; i <= 2*d; i++) {
-		for (int j = 0; j < p; j++) {
-			xk[j] = x[j] * xk[j];
+	for (long long int i = d+1; i <= 2*d; i++) {
+		for (long long int j = 0; j < p; j++) {
+			xk[j] = xy[2*j] * xk[j];
 			temp[i] += xk[j];
 		}
 	}
 	// pra que acessar depois?
-	for (int i = 0; i <= d; i++) {
-		for (int j = 0; j <= d; j++)
+	for (long long int i = 0; i <= d; i++) {
+		for (long long int j = 0; j <= d; j++)
 			A[i][j] = temp[i+j];
 	}
 }
 
 void eliminacaoGauss(double **A, double *b, int n) {
-	for (int i = 0; i < n; ++i) {
-		int iMax = i;
-		for (int k = i+1; k < n; ++k)
+	for (long long int i = 0; i < n; ++i) {
+		long long int iMax = i;
+		for (long long int k = i+1; k < n; ++k)
 			if (A[k][i] > A[iMax][i])
 				iMax = k;
 			if (iMax != i) {
@@ -59,10 +63,10 @@ void eliminacaoGauss(double **A, double *b, int n) {
 				b[iMax] = aux;
 			}
 
-			for (int k = i+1; k < n; ++k) {
+			for (long long int k = i+1; k < n; ++k) {
 				double m = A[k][i] / A[i][i];
 				A[k][i]  = 0.0;
-				for (int j = i+1; j < n; ++j)
+				for (long long int j = i+1; j < n; ++j)
 					A[k][j] -= A[i][j]*m;
 				b[k] -= b[i]*m;
 			}
@@ -70,9 +74,9 @@ void eliminacaoGauss(double **A, double *b, int n) {
 }
 
 void retrossubs(double **A, double *b, double *x, int n) {
-	for (int i = n-1; i >= 0; --i) {
+	for (long long int i = n-1; i >= 0; --i) {
 		x[i] = b[i];
-		for (int j = i+1; j < n; ++j)
+		for (long long int j = i+1; j < n; ++j)
 			x[i] -= A[i][j]*x[j];
 		x[i] /= A[i][i];
 	}
@@ -80,7 +84,7 @@ void retrossubs(double **A, double *b, double *x, int n) {
 
 double P(double x, int N, double *alpha) {
 	double Px = alpha[0];
-	for (int i = 1; i <= N; ++i)
+	for (long long int i = 1; i <= N; ++i)
 		Px += alpha[i]*pow(x,i);
 
 	return Px;
@@ -96,10 +100,14 @@ int main() {
 
 	double *x = (double *) calloc(p, sizeof(double));
 	double *y = (double *) calloc(p, sizeof(double));
+	double *xy = (double *) calloc(2*p, sizeof(double));
 
 	// ler numeros
-	for (long long int i = 0; i < p; ++i)
-		scanf("%lf %lf", x+i, y+i);
+	for (long long int i = 0; i < p; i++) {
+		scanf("%lf %lf", &x[i], &y[i]);
+		xy[2*i] = x[i];
+		xy[2*i+1] = y[i];
+	}
 
 	double **A = (double **) calloc(n, sizeof(double *));
 	for (int i = 0; i < n; ++i)
@@ -110,7 +118,7 @@ int main() {
 
 	// (A) Gera SL
 	double tSL = timestamp();
-	montaSL(A, b, N, p, x, y);
+	montaSL(A, b, N, p, xy);
 	tSL = timestamp() - tSL;
 
 	// (B) Resolve SL

@@ -1,9 +1,10 @@
 # PROGRAMA
-    PROG = ajustePol gera_entrada
+    PROG = ajustePolV2
+	OBJS = utils.o ajustePolV2.o
 
 # Compilador
     CC     = gcc
-    CFLAGS = 
+    CFLAGS = -O3 -mavx -march=native
     LFLAGS = -lm
 
 # Lista de arquivos para distribuição.
@@ -12,6 +13,14 @@ DISTFILES = *.c *.h LEIAME* Makefile
 DISTDIR = `basename ${PWD}`
 
 .PHONY: all clean purge dist
+
+%.o: %.c %.h
+	$(CC) -c $(CFLAGS) -o $@ $< -g $(LFLAGS)
+
+all: $(PROG)
+
+$(PROG): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:
 	@echo "Limpando sujeira ..."
