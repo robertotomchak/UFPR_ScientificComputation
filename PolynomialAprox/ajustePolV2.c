@@ -15,12 +15,20 @@
 // otimiação array of structs: 3.1289998442e-03 1.2749992311e-03
 
 
-
+/*
+TO-DO: algumas otimizações a se pensar:
+	- loop unrolling
+	- como otimizar gauss?
+	- stride? parece que não tem
+	- tamanho das matrizes?
+	- dependencia de dados (tirar ifs?)
+*/
 void montaSL(double **A, double *b, long long int d, long long int p, double *xy) {
 	double *temp = calloc(2*d+1, sizeof(double)); // temp[i] = soma(x[i]^i)
 	double *xk = calloc(p, sizeof(double));
 	temp[0] = p;
 	for (long long int i = 0; i < p; i++) {
+		// TO-DO: somas podem virar unrolling
 		temp[1] += xy[2*i];
 		xk[i] = xy[2*i];
 		b[0] += xy[2*i+1];
@@ -28,6 +36,7 @@ void montaSL(double **A, double *b, long long int d, long long int p, double *xy
 	}
 	for (long long int i = 2; i <= d; i++) {
 		for (long long int j = 0; j < p; j++) {
+			// TO-DO: somas podem virar unrolling
 			xk[j] = xy[2*j] * xk[j];
 			temp[i] += xk[j];
 			b[i] += xy[2*j+1] * xk[j];
@@ -35,11 +44,12 @@ void montaSL(double **A, double *b, long long int d, long long int p, double *xy
 	}
 	for (long long int i = d+1; i <= 2*d; i++) {
 		for (long long int j = 0; j < p; j++) {
+			// TO-DO: somas podem virar unrolling
 			xk[j] = xy[2*j] * xk[j];
 			temp[i] += xk[j];
 		}
 	}
-	// pra que acessar depois?
+	// TO-DO: pra que acessar depois?
 	for (long long int i = 0; i <= d; i++) {
 		for (long long int j = 0; j <= d; j++)
 			A[i][j] = temp[i+j];
