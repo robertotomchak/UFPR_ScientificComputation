@@ -15,6 +15,8 @@
 // otimiação array of structs: 3.1289998442e-03 1.2749992311e-03
 
 
+#define M 4  // loop unrolling
+
 /*
 TO-DO: algumas otimizações a se pensar:
 	- loop unrolling
@@ -27,25 +29,30 @@ void montaSL(double **A, double *b, long long int d, long long int p, double *xy
 	double *temp = calloc(2*d+1, sizeof(double)); // temp[i] = soma(x[i]^i)
 	double *xk = calloc(p, sizeof(double));
 	temp[0] = p;
+	long int i2, i3;
 	for (long long int i = 0; i < p; i++) {
+		i2 = i << 1;
+		i3 = i2 + 1;
 		// TO-DO: somas podem virar unrolling
-		temp[1] += xy[2*i];
-		xk[i] = xy[2*i];
-		b[0] += xy[2*i+1];
-		b[1] += xy[2*i] * xy[2*i+1];
+		temp[1] += xy[i2];
+		xk[i] = xy[i2];
+		b[0] += xy[i3];
+		b[1] += xy[i2] * xy[i3];
 	}
 	for (long long int i = 2; i <= d; i++) {
 		for (long long int j = 0; j < p; j++) {
+			i2 = j << 1;
+			i3 = i2 + 1;
 			// TO-DO: somas podem virar unrolling
-			xk[j] = xy[2*j] * xk[j];
+			xk[j] = xy[i2] * xk[j];
 			temp[i] += xk[j];
-			b[i] += xy[2*j+1] * xk[j];
+			b[i] += xy[i3] * xk[j];
 		}
 	}
 	for (long long int i = d+1; i <= 2*d; i++) {
 		for (long long int j = 0; j < p; j++) {
 			// TO-DO: somas podem virar unrolling
-			xk[j] = xy[2*j] * xk[j];
+			xk[j] = xy[j << 1] * xk[j];
 			temp[i] += xk[j];
 		}
 	}
@@ -76,7 +83,7 @@ void eliminacaoGauss(double **A, double *b, int n) {
 			for (long long int k = i+1; k < n; ++k) {
 				double m = A[k][i] / A[i][i];
 				A[k][i]  = 0.0;
-				for (long long int j = i+1; j < n; ++j)
+				for (long long int j = i+1; j < n; ++j) 
 					A[k][j] -= A[i][j]*m;
 				b[k] -= b[i]*m;
 			}
@@ -86,8 +93,17 @@ void eliminacaoGauss(double **A, double *b, int n) {
 void retrossubs(double **A, double *b, double *x, int n) {
 	for (long long int i = n-1; i >= 0; --i) {
 		x[i] = b[i];
-		for (long long int j = i+1; j < n; ++j)
+		long long int j = i + 1;
+		for (; j < n-n%M; j+=M) {
+			// loop unrolling
 			x[i] -= A[i][j]*x[j];
+			x[i] -= A[i][j+1]*x[j+1];
+			x[i] -= A[i][j+2]*x[j+2];
+			x[i] -= A[i][j+3]*x[j+3];
+		}
+		for (; j < n; j++)
+			x[i] -= A[i][j]*x[j];
+			
 		x[i] /= A[i][i];
 	}
 }
