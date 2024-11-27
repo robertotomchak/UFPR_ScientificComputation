@@ -1,6 +1,5 @@
 # PROGRAMA
-    PROG = ajustePolV2
-	OBJS = utils.o ajustePolV2.o
+    PROG = ajustePolV2 ajustePolV1
 
 # Compilador
     CC     = gcc
@@ -19,8 +18,12 @@ DISTDIR = `basename ${PWD}`
 
 all: $(PROG)
 
-$(PROG): $(OBJS)
-	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+ajustePolV1: ajustePolV1.c utils.c
+	$(CC) -o $@ $(CFLAGS) $^ $(LFLAGS)
+
+
+ajustePolV2: ajustePolV2.c utils.c
+	$(CC) -o $@ $(CFLAGS) $^ $(LFLAGS)
 
 clean:
 	@echo "Limpando sujeira ..."
