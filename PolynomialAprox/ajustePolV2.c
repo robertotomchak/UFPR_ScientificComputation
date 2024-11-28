@@ -13,6 +13,7 @@
 
 // otimizacação simples: 3.7219999358e-03 1.5119998716e-03
 // otimiação array of structs: 3.1289998442e-03 1.2749992311e-03
+// salvando indices + loop unrollings: 3.8299988955e-04 1.5700003132e-04
 
 
 #define M 4  // loop unrolling
