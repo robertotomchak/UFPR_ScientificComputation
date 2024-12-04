@@ -145,17 +145,19 @@ int main() {
 	double *alpha = (double *) calloc(n, sizeof(double)); // coeficientes ajuste
 
 	// (A) Gera SL
-	LIKWID_MARKER_START("otimizado");
+	LIKWID_MARKER_START("otimizado-monta");
 	double tSL = timestamp();
 	montaSL(A, b, N, p, xy);
 	tSL = timestamp() - tSL;
+	LIKWID_MARKER_STOP("otimizado-monta");
 
 	// (B) Resolve SL
+	LIKWID_MARKER_START("otimizado-elimina");
 	double tEG = timestamp();
 	eliminacaoGauss(A, b, n); 
 	retrossubs(A, b, alpha, n); 
 	tEG = timestamp() - tEG;
-	LIKWID_MARKER_STOP("otimizado");
+	LIKWID_MARKER_STOP("otimizado-elimina");
 
 	// Imprime coeficientes
 	for (int i = 0; i < n; ++i)
