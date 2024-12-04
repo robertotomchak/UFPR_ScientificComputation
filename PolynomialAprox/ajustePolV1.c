@@ -4,6 +4,7 @@
 #include <fenv.h>
 #include <math.h>
 #include <stdint.h>
+#include <likwid.h>
 
 #include "utils.h"
 
@@ -93,6 +94,7 @@ int main() {
 	double *alpha = (double *) malloc(sizeof(double)*n); // coeficientes ajuste
 
 	// (A) Gera SL
+	LIKWID_MARKER_START("original");
 	double tSL = timestamp();
 	montaSL(A, b, n, p, x, y);
 	tSL = timestamp() - tSL;
@@ -102,6 +104,7 @@ int main() {
 	eliminacaoGauss(A, b, n); 
 	retrossubs(A, b, alpha, n); 
 	tEG = timestamp() - tEG;
+	LIKWID_MARKER_STOP("otimizado");
 
 	// Imprime coeficientes
 	for (long long int i = 0; i < n; ++i)
@@ -116,5 +119,6 @@ int main() {
 	// Imprime os tempos
 	printf("%lld %1.10e %1.10e\n", K, tSL, tEG);
 
+	LIKWID_MARKER_CLOSE;
 	return 0;
 }

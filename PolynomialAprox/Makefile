@@ -2,9 +2,10 @@
     PROG = ajustePolV2 ajustePolV1
 
 # Compilador
+    LIKWID_HOME = /home/soft/likwid
     CC     = gcc
-    CFLAGS = -O3 -mavx -march=native
-    LFLAGS = -lm
+    CFLAGS = -O3 -mavx -march=native -DLIKWID_PERFMON -I${LIKWID_HOME}/include
+    LFLAGS = -lm -L${LIKWID_HOME}/lib -llikwid
 
 # Lista de arquivos para distribuição.
 # LEMBRE-SE DE ACRESCENTAR OS ARQUIVOS ADICIONAIS SOLICITADOS NO ENUNCIADO DO TRABALHO
