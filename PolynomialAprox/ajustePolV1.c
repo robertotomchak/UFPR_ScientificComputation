@@ -72,6 +72,7 @@ double P(double x, int N, double *alpha) {
 }
 
 int main() {
+	LIKWID_MARKER_INIT;
 	int N, n;
 	long long int K, p;
 
@@ -94,17 +95,19 @@ int main() {
 	double *alpha = (double *) malloc(sizeof(double)*n); // coeficientes ajuste
 
 	// (A) Gera SL
-	LIKWID_MARKER_START("original");
+	LIKWID_MARKER_START("original-monta");
 	double tSL = timestamp();
 	montaSL(A, b, n, p, x, y);
 	tSL = timestamp() - tSL;
+	LIKWID_MARKER_STOP("original-monta");
 
 	// (B) Resolve SL
+	LIKWID_MARKER_START("original-elimina");
 	double tEG = timestamp();
 	eliminacaoGauss(A, b, n); 
 	retrossubs(A, b, alpha, n); 
 	tEG = timestamp() - tEG;
-	LIKWID_MARKER_STOP("otimizado");
+	LIKWID_MARKER_STOP("original-elimina");
 
 	// Imprime coeficientes
 	for (long long int i = 0; i < n; ++i)
