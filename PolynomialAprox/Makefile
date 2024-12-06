@@ -1,5 +1,5 @@
 # PROGRAMA
-    PROG = ajustePolV2 ajustePolV1
+    PROG = ajustePolV2 ajustePolV1 gera
 
 # Compilador
     LIKWID_HOME = /home/soft/likwid
@@ -26,13 +26,15 @@ ajustePolV1: ajustePolV1.c utils.c
 ajustePolV2: ajustePolV2.c utils.c
 	$(CC) -o $@ $(CFLAGS) $^ $(LFLAGS)
 
+gera: gera_entrada.c utils.c
+	$(CC) -o $@ $(CFLAGS) $^ $(LFLAGS)
+
 clean:
-	@echo "Limpando sujeira ..."
-	@rm -f *~ *.bak core 
 
 purge:  clean
-	@echo "Limpando tudo ..."
-	@rm -f $(PROG) *.o a.out $(DISTDIR) $(DISTDIR).tar
+	rm ajustePolV1
+	rm ajustePolV2
+	rm gera
 
 dist: purge
 	@echo "Gerando arquivo de distribuição ($(DISTDIR).tar) ..."
