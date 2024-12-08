@@ -33,24 +33,24 @@ void eliminacaoGauss(double **A, double *b, int n) {
 		for (long long int k = i+1; k < n; ++k)
 			if (A[k][i] > A[iMax][i])
 				iMax = k;
-			if (iMax != i) {
-				double *tmp, aux;
-				tmp = A[i];
-				A[i] = A[iMax];
-				A[iMax] = tmp;
+		if (iMax != i) {
+			double *tmp, aux;
+			tmp = A[i];
+			A[i] = A[iMax];
+			A[iMax] = tmp;
 
-				aux = b[i];
-				b[i] = b[iMax];
-				b[iMax] = aux;
-			}
+			aux = b[i];
+			b[i] = b[iMax];
+			b[iMax] = aux;
+		}
 
-			for (long long int k = i+1; k < n; ++k) {
-				double m = A[k][i] / A[i][i];
-				A[k][i]  = 0.0;
-				for (long long int j = i+1; j < n; ++j)
-					A[k][j] -= A[i][j]*m;
-				b[k] -= b[i]*m;
-			}
+		for (long long int k = i+1; k < n; ++k) {
+			double m = A[k][i] / A[i][i];
+			A[k][i]  = 0.0;
+			for (long long int j = i+1; j < n; ++j)
+				A[k][j] -= A[i][j]*m;
+			b[k] -= b[i]*m;
+		}
 	}
 }
 
