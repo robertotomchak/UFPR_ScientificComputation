@@ -11,6 +11,7 @@ Além disso, o objetivo é otimizar o algoritmo dado, de forma a aprender técni
 ## Pré-requisitos
 - É necessário ter Python instalado. Nenhuma biblioteca além das bibliotecas padrão da linguagem são usadas
 - O projeto foi desenvolvido em Linux. Em outros SOs pode ser que não execute, devido ao uso de bash scripts e paths no padrão Linux (dir1/dir2/...)
+- É necessário ter o likwid instalado. É possível que seja necessário alterar o LIKDWID_HOME no Makefile 
 
 ## Como usar
 ### Compilando códigos
@@ -29,6 +30,20 @@ Caso o diretório "results" já exista com todos os resultados, execute:
 ./gera_graficos.sh
 ```
 Os gráficos serão salvos num diretório "graphics", com dois subdiretórios: "a", que contém os gráficos da parte a do algoritmo (montaSL), e o subdiretório "b", com os gráficos da parte b do algoritmo (resolveSL com eliminação de Gauss)
+
+## Arquitetura usada
+Dados obtidos com o comando 
+```console
+likwid-topology -g -c
+```
+
+Tipo da CPU: Intel Xeon SandyBridge EN/EP processor
+
+Sockets: 2, cada uma com 8 cores e 1 thread por core
+
+Cache: L1 (32 kB), L2 (256 kB) e L3 (20 MB)
+
+Mais informações em topology.txt.
 
 ## Otimizações Feitas
 - Array of structs: ao invés de ter um vetor x e um vetor y, foi criado um vetor que intercala os dois (x0, y0, x1, y2, ..., xn, yn). Essa otimização foi feita pois o acesso no código é feito pegando o valor x e seu respectivo y logo em seguida, logo assim é otimizado o uso da cache;
