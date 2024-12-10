@@ -158,6 +158,7 @@ int main() {
 	tEG = timestamp() - tEG;
 	LIKWID_MARKER_STOP("otimizado-elimina");
 
+	#ifdef PRINT
 	// Imprime coeficientes
 	for (int i = 0; i < n; ++i)
 		printf("%1.15e ", alpha[i]);
@@ -167,6 +168,7 @@ int main() {
 	for (long long int i = 0; i < p; ++i)
 		printf("%1.15e ", fabs(y[i] - P(x[i],N,alpha)) );
 	puts("");
+	#endif
 
 	// Imprime os tempos
 	printf("%lld %1.10e %1.10e\n", K, tSL, tEG);
