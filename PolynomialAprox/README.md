@@ -18,6 +18,8 @@ Além disso, o objetivo é otimizar o algoritmo dado, de forma a aprender técni
 ```console
 make all
 ```
+Obs: para poder fazer os testes, foi removido a impressão dos coeficientes e resíduos do polinômio criado. Para incluir a impressão, é necessário adicionar a flag -DPRINT no Makefile.
+
 ### Gerando testes
 ```console
 ./gera_testes.sh
