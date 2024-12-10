@@ -103,23 +103,23 @@ def plot_graphic(x, Y, file_path, y_log=False):
     if y_log:
         plt.yscale("log")
     labels = ["v1 10", "v1 1000", "v2 10", "v2 1000"]
-    colors = ["blue", "orange", "green", "red"]
+    styles = ["b--", "g--", "y-", "k-"]
     for i, y in enumerate(Y):
-        plt.plot(x, y, label=labels[i], color=colors[i])
+        plt.plot(x, y, styles[i], label=labels[i])
     plt.legend()
     plt.savefig(file_path)
     plt.close()
 
 
-def plot_from_data(data, dir, file_name):
+def plot_from_data(data, dir, file_name, y_log=False):
     file_path_a = os.path.join(dir, "a", file_name)
     x = data["a"][0]
     Y = data["a"][1:]
-    plot_graphic(x, Y, file_path_a)
+    plot_graphic(x, Y, file_path_a, y_log=y_log)
     file_path_b = os.path.join(dir, "b", file_name)
     x = data["b"][0]
     Y = data["b"][1:]
-    plot_graphic(x, Y, file_path_b)
+    plot_graphic(x, Y, file_path_b, y_log=y_log)
 
 
 # the time csv is different than the others
@@ -169,6 +169,9 @@ plot_from_data(data, "graphics", "L3_MISS_RATIO.png")
 
 data = organize_data(get_info("ENERGY", "Energy [J]"))
 plot_from_data(data, "graphics", "ENERGY.png")
+
+data = organize_data(get_info("ENERGY", "Energy [J]"))
+plot_from_data(data, "graphics", "ENERGY_LOG.png", y_log=True)
 
 data = organize_data(get_info("FLOPS_DP", "DP MFLOP/s"))
 plot_from_data(data, "graphics", "FLOPS_DP.png")
