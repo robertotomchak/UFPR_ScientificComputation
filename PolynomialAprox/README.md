@@ -61,6 +61,17 @@ As seguintes modificações foram testadas, mas foram descartadas por não apres
 - Loop unrolling em outros trechos da etapa b
 - Representar matriz como vetor
 
+## Analisando Resultados
+Obs: para a etapa A, houve um pico de energia inusitado no v1 com n = 10. Para poder analisar melhor essa métrica, foicriado um gráfico que avalia a energia, mas com o eixo y em escala logarítmica, além do gráfico com esse eixo inalterado.
+
+Analisando os resultados na etapa B, vemos que há pouca diferença entre v1 e v2. Isso acontece porque poucas modificações foram feitas no algoritmo (apenas loop unrolling na retrosubstituição). Entretanto, essa modificação já ajudou a ter alguns resultados. Apesar de pequena diferença, o v2 teve menos cache miss que o v1, o que refletiu numa pequena redução no tempo total do algoritmo para n = 10. Para n = 1000, parece que esse ganho de desempenho no uso da memória contribuiu pouco para o tempo dessa etapa.
+
+Já na etapa A, o v2 é melhor que o v1 em todos os aspectos. O gasto energético é bem mais baixo, o número de MFLOPS/s caiu e o cache miss é consideravemente mais baixo, cerca de 2 vezes menor. O uso mais eficiente da memória e a realização de menos operações com ponto flutuante refletiu numa redução forte no tempo de execução de algumas ordens de magnitude (cerca de 100 ou 1000 vezes menor). Inclusive, a diferença é tão gritante que o v2 com n = 1000 se compara igualmente com o v1 com n = 10 em termos de tempo.
+
+Embora não houve muita otimização na etapa B, o gargalo do algoritmo é justamente na etapa A. Vendo a escala de tempo dessas duas etapas, é possível notar que a magnitude do eixo y é bem maior na etapa A do que na etapa B. Assim, v2 conseguiu otimizar muito bem o ponto problemático do algoritmo sem trazer prejuízos.
+
+Assim, é possível concluir que as otimizações de v2 foram benéficas para o algoritmo como um todo.
+
 ## Explicando Resultados de AVX Flops
 Uma das métricas usadas nesse trabalho foi o AVX Flops, medido em MFLops/s. Essa métrica mostra o uso de operações de ponto flutuante que foram cálculados usando instruções vetoriais da CPU. Ou seja, cálculos que foram possíveis de serem vetorizados.
 
